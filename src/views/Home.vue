@@ -1,18 +1,33 @@
+<!-- @format -->
+
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+	<v-app>
+		<Drawer />
+
+		<v-main>
+			<ToolBar class="toolbarFloat"/>
+			<HereMap class="map"/>
+		</v-main>
+	</v-app>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
-export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
-}
+	/* eslint-disable */
+	export default {
+		name: 'Home',
+		components: {
+			HereMap: () => import('../components/MapComponent'),
+			ToolBar: () => import('../components/ToolBar'),
+			Drawer: () => import('../components/Drawer')
+		},
+		data: () => ({
+		}),
+		methods: {},
+	}
 </script>
+
+<style scoped>
+	.toolbarFloat {
+		z-index: 2;
+	}
+</style>
