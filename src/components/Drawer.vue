@@ -167,7 +167,7 @@
 		},
 		mounted() {
 			this.getUserLocation()
-			this.getListAstronaut()
+			// this.getListAstronaut()
 		},
 	}
 </script>

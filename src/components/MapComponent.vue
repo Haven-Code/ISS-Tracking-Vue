@@ -8,8 +8,10 @@
 </template>
 
 <script>
+	/* eslint-disable */
 	import axios from 'axios'
 	import { getSatelliteInfo } from 'tle.js'
+	import moment from 'moment'
 
 	export default {
 		name: 'HereMap',
@@ -24,7 +26,10 @@
 					tle: null,
 					marker: null,
 					markerFirstTime: true,
-					status: null
+					status: null,
+				},
+				user: {
+					coords: null,
 				},
 			}
 		},
@@ -42,7 +47,11 @@
 				this.getISSData()
 			}, 8000)
 
-			// this.initUserLocation()
+			setTimeout(() => {
+				this.drawOrbitLine()
+			}, 2000)
+
+			this.initUserLocation()
 		},
 		methods: {
 			initializeHereMap() {
@@ -61,6 +70,7 @@
 				})
 
 				this.map.instance = map
+				this.$store.commit('SET_MAP_INSTACE', map)
 
 				addEventListener('resize', () => map.getViewPort().resize())
 
@@ -86,6 +96,7 @@
 
 							this.map.instance.addObject(marker)
 							//this.map.instance.setCenter(pos)
+							this.$store.commit('SET_USER_COORDS', pos)
 						},
 						() => {
 							pos = this.getUserLocationByIP()
@@ -108,7 +119,7 @@
 					}
 
 					this.iss.tle = tle
-					this.$store.commit("SET_ISS_TLE",tle)
+					this.$store.commit('SET_ISS_TLE', tle)
 				} catch (err) {
 					throw new Error(err)
 				}
@@ -117,7 +128,7 @@
 				const tleArr = [this.iss.tle.line1, this.iss.tle.line2]
 				const sttInfo = getSatelliteInfo(tleArr)
 				// console.log(sttInfo)
-				
+
 				let pos = {
 					lat: sttInfo.lat,
 					lng: sttInfo.lng,
@@ -143,7 +154,36 @@
 				}
 
 				this.iss.status = sttInfo
-				this.$store.commit("SET_ISS_DATA", sttInfo)
+				this.$store.commit('SET_ISS_DATA', sttInfo)
+			},
+			drawOrbitLine() {
+				const tleArr = [this.iss.tle.line1, this.iss.tle.line2]
+				const delay = 250000
+
+				const H = window.H
+				let lineString = new H.geo.LineString()
+
+				const nowTimeStamp = moment().valueOf()
+				let newTimeStamp = nowTimeStamp - delay / 2
+				const sttInfo = getSatelliteInfo(tleArr, newTimeStamp)
+
+				lineString.pushPoint({ lat: sttInfo.lat, lng: sttInfo.lng })
+
+				for (let i = 1; i <= 15; i++) {
+					const nowTimeStamp = moment().valueOf()
+					let newTimeStamp = nowTimeStamp + delay * i
+					const sttInfo = getSatelliteInfo(tleArr, newTimeStamp)
+
+					lineString.pushPoint({ lat: sttInfo.lat, lng: sttInfo.lng })
+				}
+
+				let option = {
+					style: {
+						lineWidth: 4,
+						fillColor: '#ffff00',
+					}
+				}
+				this.map.instance.addObject(new H.map.Polyline(lineString, option))
 			},
 		},
 	}

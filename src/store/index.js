@@ -8,6 +8,12 @@ export default new Vuex.Store({
 		iss: {
 			data: null,
 			tle: null
+		},
+		user: {
+			coords: null
+		},
+		map: {
+			instance: null
 		}
 	},
 	mutations: {
@@ -16,6 +22,12 @@ export default new Vuex.Store({
 		},
 		SET_ISS_TLE: (state, payload) => {
 			state.iss.tle = payload
+		},
+		SET_USER_COORDS: (state, payload) => {
+			state.user.coords = payload
+		},
+		SET_MAP_INSTACE: (state, payload) => {
+			state.map.instance = payload
 		}
 	},
 	actions: {
