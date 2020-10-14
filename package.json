@@ -4,14 +4,18 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "yarn lambda:build; vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/lang/**/*.json'"
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/lang/**/*.json'",
+    "lambda:serve": "netlify-lambda serve functions",
+    "lambda:build": "netlify-lambda build functions"
+  
   },
   "dependencies": {
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "moment": "^2.29.0",
+    "netlify-lambda": "^2.0.1",
     "tle.js": "^4.2.5",
     "vue": "^2.6.11",
     "vue-i18n": "^8.17.3",
